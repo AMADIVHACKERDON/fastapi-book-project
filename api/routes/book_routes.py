@@ -35,7 +35,7 @@ db.books = {
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_book(book: Book):
-   if book.id in db.books:
+    if book.id in db.books:
         raise HTTPException(status_code=400, detail="Book ID already exists")
     db.add_book(book)
     return book  # ✅ FastAPI will handle serialization
