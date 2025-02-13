@@ -4,7 +4,7 @@ from api.db.schemas import Genre
 
 client = TestClient(app)
 def test_get_all_books():
-    response = client.get("/books/")
+    response = client.get("/api/v1/books/")
     assert response.status_code == 200
     assert isinstance(response.json(), dict)  # Ensure it returns a dictionary
     assert len(response.json()) > 0  # Ensure there is at least 1 book
