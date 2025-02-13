@@ -31,7 +31,7 @@ class Book(BaseModel):
 
 class InMemoryDB:
     def __init__(self):
-        self.books: {}
+        self.books: {} # type: ignore
 
     def get_books(self, book_id: int) -> Book:
         """Gets books from database.
