@@ -53,13 +53,6 @@ git clone https://github.com/hng12-devbotops/fastapi-book-project.git
 cd fastapi-book-project
 ```
 
-2. Create a virtual environment:
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
 3. Install dependencies:
 
 ```bash
@@ -113,12 +106,6 @@ Available genres:
 - Mystery
 - Romance
 - Thriller
-
-## Running Tests
-
-```bash
-pytest
-```
 
 ## Error Handling
 
