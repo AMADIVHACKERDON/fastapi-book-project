@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
-from api.routes import book_routes
+
 
 from core.config import settings
 from api.routes.books import router as book_router
