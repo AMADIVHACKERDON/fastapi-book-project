@@ -34,6 +34,10 @@ db.books = {
 
 
 
+@router.get("/", response_model=List[Book], status_code=status.HTTP_200_OK)
+async def get_all_books():
+    return list(db.books.values())  # Assuming db.books is a dictionary of books
+    
 @router.get("/{book_id}", response_model=Book, status_code=status.HTTP_200_OK)
 async def get_book(book_id: int):
     if book_id in db.books:
