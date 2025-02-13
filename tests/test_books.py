@@ -1,6 +1,5 @@
-from tests import client
 from fastapi.testclient import TestClient
-from api.main import app 
+from main import app 
 from api.db.schemas import Genre
 
 client = TestClient(app)
