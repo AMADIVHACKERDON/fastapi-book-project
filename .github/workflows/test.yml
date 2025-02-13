@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-
+  workflow_dispatch:  # 👈 Allows manual triggering
 jobs:
   test:
     runs-on: ubuntu-latest
