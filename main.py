@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 from core.config import settings
-from .api.routes.book_routes import router as book_router
+from api.routes.book_routes import router as book_router
 
 app = FastAPI()
 
