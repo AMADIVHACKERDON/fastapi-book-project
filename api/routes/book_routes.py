@@ -41,7 +41,7 @@ async def create_book(book: Book):
     return book  # ✅ FastAPI will handle serialization
 
 
-@router.get("/{book_id}", response_model= Book, status_code=status.HTTP_200_OK)
+@router.get("/{book_id}", response_model=Book, status_code=status.HTTP_200_OK)
 async def get_book(book_id: int):
     if book_id in db.books:
         return db.books[book_id]
@@ -50,12 +50,17 @@ async def get_book(book_id: int):
 
 @router.put("/{book_id}", response_model=Book, status_code=status.HTTP_200_OK)
 async def update_book(book_id: int, book: Book) -> Book:
-     return db.update_book(book_id, book)  # ✅ No need for JSONResponse
+    try:
+        return db.update_book(book_id, book)  # ✅ No need for JSONResponse
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Book not found")
     
 @router.delete("/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(book_id: int):
-    if book_id not in db.books:
+    try:
+        db.delete_book(book_id)  # ✅ Use the method instead of direct deletion
+        return
+    except ValueError:
         raise HTTPException(status_code=404, detail="Book not found")
-    
-    db.delete_book(book_id)  # ✅ Use the method instead of direct deletion
+
     return
