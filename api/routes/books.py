@@ -6,7 +6,8 @@ from fastapi.responses import JSONResponse
 from api.db.schemas import Book, Genre, InMemoryDB
 
 router = APIRouter()
-
+# Updated books.py to trigger CI/CD
+dummy_variable = None  # Temporary change
 db = InMemoryDB()
 db.books = {
     1: Book(
@@ -45,6 +46,7 @@ async def create_book(book: Book):
     "/", response_model=OrderedDict[int, Book], status_code=status.HTTP_200_OK
 )
 async def get_books() -> OrderedDict[int, Book]:
+    """Returns a list of books (Updated docstring)."""
     return db.get_books()
 
 
