@@ -31,15 +31,15 @@ class Book(BaseModel):
 
 class InMemoryDB:
     def __init__(self):
-        self.books: OrderedDict[int, Book] = {}
+        self.books: {}
 
-    def get_books(self) -> OrderedDict[int, Book]:
+    def get_books(self, book_id: int) -> Book:
         """Gets books from database.
 
         Returns:
             OrderedDict[int, Book]: Ordered dictionary of books.
         """
-        return self.books
+        return self.books.get(book_id)
 
     def add_book(self, book: Book) -> Book:
         """Adds book to database.
