@@ -42,8 +42,7 @@ async def create_book(book: Book):
     return book  # ✅ FastAPI will handle serialization
 
 
-@router.get(
-    "/{book_id}", response_model= Book, status_code=status.HTTP_200_OK)
+@router.get("/{book_id}", response_model= Book, status_code=status.HTTP_200_OK)
 async def get_book(book_id: int):
     if book_id in db.books:
         return db.books[book_id]
