@@ -1,4 +1,4 @@
-from typing import OrderedDict
+from typing import List
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
@@ -40,10 +40,12 @@ async def create_book(book: Book):
         status_code=status.HTTP_201_CREATED, content=book.model_dump()
     )
 
-
+@router.get("/", response_model= List[Book], status_code=status.HTTP_200_OK)
+async def get_all_books():
+    return list(db.books.values())  # Return all books as a list
+ 
 @router.get(
-    "/{book_id}", response_model= Book, status_code=status.HTTP_200_OK
-)
+    "/{book_id}", response_model= Book, status_code=status.HTTP_200_OK)
 async def get_book(book_id:int) -> Book:
      book = db.get_book(book_id)  # Assuming get_book() is defined in your db class
      if book:
