@@ -16,7 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(book_router, prefix="/books", tags=["books"])
+app.include_router(book_router, prefix="/api/v1", tags=["books"])
 
 
 @app.get("/healthcheck")
