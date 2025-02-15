@@ -36,4 +36,3 @@ jobs:
             docker stop fastapi-app || true
             docker rm fastapi-app || true
             docker run -d --name fastapi-app -p 8000:8000 --restart always ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest
-
