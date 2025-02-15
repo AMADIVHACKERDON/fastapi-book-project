@@ -11,12 +11,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
       # Step 4: SSH into the EC2 instance to deploy the application
-      - name: SSH to EC2 and Deploy
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.SERVER_IP }}  # GitHub Secret for EC2 public IP
           username: ubuntu  # Assuming you are using the default Ubuntu user for EC2
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # GitHub Secret for SSH private key
+          port: 22
           script: |
             # Update package index and install dependencies
             sudo apt-get update -y
