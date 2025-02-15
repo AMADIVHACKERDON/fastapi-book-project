@@ -1,37 +1,46 @@
-name: Deploy
-
+name: CD Pipeline
 on:
   push:
     branches:
-      - main  # Runs only when code is pushed or merged to main
-
+      - main  # Trigger this pipeline on pushes to the main branch
 jobs:
   deploy:
-    name: Deploy Application
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build and Push Docker Image
-        run: |
-          docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest --push ./Users/VP/Documents/pythonProject/fastapi-book-project/Dockerfile
-
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@v0.1.7
+      # Step 1: Checkout the code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      # Step 4: SSH into the EC2 instance to deploy the application
+      - name: SSH to EC2 and Deploy
+        uses: appleboy/ssh-action@v0.1.5
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_PUBLIC_IP }}  # GitHub Secret for EC2 public IP
+          username: ubuntu  # Assuming you are using the default Ubuntu user for EC2
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # GitHub Secret for SSH private key
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest
-            docker stop fastapi-app || true
-            docker rm fastapi-app || true
-            docker run -d --name fastapi-app -p 8000:8000 --restart always ${{ secrets.DOCKER_USERNAME }}/fastapi-app:latest
+            # Update package index and install dependencies
+            sudo apt-get update -y
+            sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+            # Add Docker's official GPG key
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+            sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+            # Install Docker
+            sudo apt-get update -y
+            sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+            # Install Docker Compose
+            sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            # Verify installations
+            docker --version
+            docker-compose --version
+            # Clone the project repository to the EC2 instance
+            cd /home/ubuntu/
+            if [ ! -d "fastapi-book-project" ]; then
+              git clone https://github.com/AMADIVHACKERDON/fastapi-book-project.git
+            else
+              cd fastapi-book-project
+              git pull origin main  # Pull latest changes from the main branch
+            fi
+            # Navigate to the project folder and build/restart Docker containers
+            cd /home/ubuntu/fastapi-book-project/
+            sudo docker-compose up -d --build # Rebuild and start containers in detached mode
